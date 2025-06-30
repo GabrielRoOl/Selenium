@@ -4,21 +4,18 @@ import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class LoginTest {
 
-    private static final Logger log = LoggerFactory.getLogger(LoginTest.class);
-    private LoginPage  loginPage;
+    private LoginPage loginPage;
 
     @BeforeEach
-    public void beforeEach(){
+    public void beforeEach() {
         this.loginPage = new LoginPage();
     }
 
     @AfterEach
-    public void afterEach(){
+    public void afterEach() {
         this.loginPage.quit();
     }
 
@@ -33,7 +30,6 @@ public class LoginTest {
 
     @Test
     void loginComDadosInvalidos() {
-
         loginPage.preencheFormularioDeLogin("invalido", "123");
         loginPage.efetuaLogin();
 
@@ -42,11 +38,10 @@ public class LoginTest {
     }
 
     @Test
-    void naoDeveAcessarPaginaRestritaSemLogar(){
+    void naoDeveAcessarPaginaRestritaSemLogar() {
         loginPage.navegaPaginaLances();
 
         Assert.assertTrue(loginPage.isPaginaLogin());
         Assert.assertFalse(loginPage.contemTexto("Dados do Leilão"));
     }
-
 }
