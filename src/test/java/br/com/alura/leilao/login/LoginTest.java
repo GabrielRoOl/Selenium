@@ -2,59 +2,51 @@ package br.com.alura.leilao.login;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LoginTest {
 
-    private static String URL_LOGIN = "http://localhost:8080/login";
-
-    private WebDriver browser;
-
-    @BeforeAll
-    public static void beforeAll(){
-        System.setProperty("webdriver.chrome.driver", "drivers\\chromedriver-win64\\chromedriver.exe"); // configuração de ambiente
-    }
+    private static final Logger log = LoggerFactory.getLogger(LoginTest.class);
+    private LoginPage  loginPage;
 
     @BeforeEach
     public void beforeEach(){
-        this.browser = new ChromeDriver(); // abre o navegador
-        this.browser.navigate().to(URL_LOGIN);
+        this.loginPage = new LoginPage();
     }
 
     @AfterEach
     public void afterEach(){
-        this.browser.quit();
+        this.loginPage.quit();
     }
 
     @Test
     void efetuarLoginComDadosValidos() {
-        browser.findElement(By.id("username")).sendKeys("fulano");  // procura um elemento pelo id e passa um texto como chave
-        browser.findElement(By.id("password")).sendKeys("pass");    // procura um elemento pelo id e passa um texto como chave
-        browser.findElement(By.id("login-form")).submit();  // procura um elemento pelo id e por ser um form apenas de um submit irá acionar o butão
+        loginPage.preencheFormularioDeLogin("fulano", "pass");
+        loginPage.efetuaLogin();
 
-        Assert.assertFalse(browser.getCurrentUrl().equals(URL_LOGIN));  // Garante que o usuário *saiu* da pagina de login depois da autenticação
-        Assert.assertEquals("fulano Sair", browser.findElement(By.id("usuario-logado")).getText()); // Garante que o usuario logado é o mesmo que fez a autenticação
+        Assert.assertFalse(loginPage.isPaginaLogin());
+        Assert.assertEquals("fulano Sair", loginPage.getNomeUsuarioLogado());
     }
 
     @Test
     void loginComDadosInvalidos() {
 
-        // procura um elemento pelo id e passa um texto como chave
-        browser.findElement(By.id("username")).sendKeys("Usuario Invalido");
-        // procura um elemento pelo id e passa um texto como chave
-        browser.findElement(By.id("password")).sendKeys("1234");
-        // procura um elemento pelo id e por ser um form apenas de um submit irá acionar o butão
-        browser.findElement(By.id("login-form")).submit();
+        loginPage.preencheFormularioDeLogin("invalido", "123");
+        loginPage.efetuaLogin();
 
-        // Garante que o usuário permanece na tela de login
-        Assert.assertTrue(browser.getCurrentUrl().equals("http://localhost:8080/login?error"));
-        // Garante que o usuario recebeu uma mensagem de usuário e senha inválidos.
-        Assert.assertTrue(browser.getPageSource().contains("Usuário e senha inválidos."));
-
+        Assert.assertTrue(loginPage.erroDeLogin());
+        Assert.assertTrue(loginPage.usuarioOuSenhaIncorreto());
     }
+
+    @Test
+    void naoDeveAcessarPaginaRestritaSemLogar(){
+        loginPage.navegaPaginaLances();
+
+        Assert.assertTrue(loginPage.isPaginaLogin());
+        Assert.assertFalse(loginPage.contemTexto("Dados do Leilão"));
+    }
+
 }
