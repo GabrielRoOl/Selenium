@@ -1,24 +1,18 @@
 package br.com.alura.leilao.login;
 
+import br.com.alura.leilao.PageObject;
 import br.com.alura.leilao.leiloes.LeiloesPage;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 
-public class LoginPage {
+public class LoginPage extends PageObject {
 
     private static String URL_LEILOES = "http://localhost:8080/login";
-    private WebDriver browser;
 
     public LoginPage() {
-        System.setProperty("webdriver.chrome.driver", "drivers\\chromedriver-win64\\chromedriver.exe"); // configuração de ambiente
-        this.browser = new ChromeDriver(); // abre o navegador
+        super(null);
         this.browser.navigate().to(URL_LEILOES);
     }
 
-    public void quit() {
-        this.browser.quit();
-    }
 
     public void preencheFormularioDeLogin(String username, String password) {
         browser.findElement(By.id("username")).sendKeys(username);

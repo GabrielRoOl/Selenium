@@ -1,14 +1,15 @@
 package br.com.alura.leilao.leiloes;
 
+import br.com.alura.leilao.PageObject;
 import org.openqa.selenium.WebDriver;
 
-public class LeiloesPage {
+public class LeiloesPage extends PageObject {
 
     private static String URL_NEW_AUCTION = "http://localhost:8080/leiloes/new";
     private WebDriver browser;
 
     public LeiloesPage(WebDriver browser) {
-        this.browser = browser;
+        super(browser);
     }
 
     public void quit() {

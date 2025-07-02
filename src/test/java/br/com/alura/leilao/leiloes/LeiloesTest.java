@@ -16,7 +16,7 @@ public class LeiloesTest {
     public void afterEach() {
         this.leiloesPage.quit();
     }
-    
+
     @Test
     public void shouldRegisterAuction() {
         LoginPage loginPage = new LoginPage();
@@ -32,4 +32,19 @@ public class LeiloesTest {
 
         Assert.assertTrue(auctionRegistrationPage.isRegistrationAuction(name, value, date));
     }
+
+    @Test
+    public void shouldValidateNewAuction() {
+        LoginPage loginPage = new LoginPage();
+        loginPage.preencheFormularioDeLogin("fulano", "pass");
+        this.leiloesPage = loginPage.efetuaLogin();
+        AuctionRegistrationPage auctionRegistrationPage = leiloesPage.loadForm();
+
+        this.leiloesPage = auctionRegistrationPage.registerAuction("", "", "");
+
+        Assert.assertTrue(auctionRegistrationPage.isAtualPage());
+        Assert.assertTrue(auctionRegistrationPage.isValidationsMessages());
+    }
+
+
 }
